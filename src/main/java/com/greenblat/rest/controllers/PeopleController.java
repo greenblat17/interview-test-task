@@ -5,10 +5,7 @@ import com.greenblat.rest.models.Person;
 import com.greenblat.rest.services.PeopleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users/")
@@ -26,6 +23,14 @@ public class PeopleController {
     @PostMapping("/add")
     public Long addUser(@RequestBody PersonDTO personDTO) {
         return peopleService.save(modelMapper.map(personDTO, Person.class), personDTO.getImageUri());
+    }
+
+    @GetMapping("/{id}")
+    public PersonDTO getUser(@PathVariable int id) {
+        Person person = peopleService.getUserById(id);
+        PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
+        personDTO.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
+        return personDTO;
     }
 }
 

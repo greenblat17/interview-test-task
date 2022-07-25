@@ -34,4 +34,8 @@ public class PeopleService {
         peopleRepository.save(user);
         return user.getId();
     }
+
+    public Person getUserById(long id) {
+        return peopleRepository.findById(id).orElse(null);
+    }
 }
