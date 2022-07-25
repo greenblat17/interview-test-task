@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -28,7 +27,7 @@ public class ImagesService {
     }
 
     @Transactional
-    public String loadImage(MultipartFile file) throws IOException {
+    public String upload(MultipartFile file) throws IOException {
         File uploadDir = new File(uploadPath);
 
         if (!uploadDir.exists())
@@ -43,6 +42,6 @@ public class ImagesService {
         Image image = new Image(uri);
         imagesRepository.save(image);
 
-        return image.getFilename();
+        return image.getUri();
     }
 }

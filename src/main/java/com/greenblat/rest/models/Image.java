@@ -11,11 +11,15 @@ public class Image {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "filename")
-    private String filename;
+    @Column(name = "uri")
+    private String uri;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Person user;
 
     public Image(String filename) {
-        this.filename = filename;
+        this.uri = filename;
     }
 
     public Image() {
@@ -29,11 +33,19 @@ public class Image {
         this.id = id;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getUri() {
+        return uri;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setUri(String filename) {
+        this.uri = filename;
+    }
+
+    public Person getUser() {
+        return user;
+    }
+
+    public void setUser(Person user) {
+        this.user = user;
     }
 }
