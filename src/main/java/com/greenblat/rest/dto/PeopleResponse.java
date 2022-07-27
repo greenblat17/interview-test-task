@@ -3,20 +3,20 @@ package com.greenblat.rest.dto;
 import java.util.List;
 
 public class PeopleResponse {
-    private List<PersonDTO> personDTOs;
+    private List<PersonResponse> personDTOs;
 
     public PeopleResponse() {
     }
 
-    public PeopleResponse(List<PersonDTO> personDTOs) {
+    public PeopleResponse(List<PersonResponse> personDTOs) {
         this.personDTOs = personDTOs;
     }
 
-    public List<PersonDTO> getPersonDTOs() {
+    public List<PersonResponse> getPersonDTOs() {
         return personDTOs;
     }
 
-    public void setPersonDTOs(List<PersonDTO> personDTOs) {
+    public void setPersonDTOs(List<PersonResponse> personDTOs) {
         this.personDTOs = personDTOs;
     }
 }

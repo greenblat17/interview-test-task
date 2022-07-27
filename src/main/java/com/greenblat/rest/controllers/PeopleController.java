@@ -2,6 +2,7 @@ package com.greenblat.rest.controllers;
 
 import com.greenblat.rest.dto.PeopleResponse;
 import com.greenblat.rest.dto.PersonDTO;
+import com.greenblat.rest.dto.PersonResponse;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Person;
 import com.greenblat.rest.services.PeopleService;
@@ -33,24 +34,25 @@ public class PeopleController {
     }
 
     @GetMapping("/{id}")
-    public PersonDTO getUser(@PathVariable int id) {
+    public PersonResponse getUser(@PathVariable int id) {
         Person person = peopleService.findOne(id);
-        PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
-        personDTO.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
-        return personDTO;
+        PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
+        personResponse.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
+        return personResponse;
     }
 
     @GetMapping()
-    public PeopleResponse getAllUser(@RequestParam(required = false, name = "status") String status) {
+    public PeopleResponse getAllUser(@RequestParam(required = false, name = "status") String status,
+                                     @RequestParam(required = false, name = "timestamp") Long timestamp) {
         System.out.println(100);
-        List<Person> people = peopleService.findAll(status);
-        List<PersonDTO> personDTOList = new ArrayList<>();
+        List<Person> people = peopleService.findAll(status, timestamp);
+        List<PersonResponse> peopleResponse = new ArrayList<>();
         for (Person person: people) {
-            PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
-            personDTO.setImageUri(person.getImage().getUri());
-            personDTOList.add(personDTO);
+            PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
+            personResponse.setImageUri(person.getImage().getUri());
+            peopleResponse.add(personResponse);
         }
-        return new PeopleResponse(personDTOList);
+        return new PeopleResponse(peopleResponse);
     }
 
     @GetMapping("/{id}/status")

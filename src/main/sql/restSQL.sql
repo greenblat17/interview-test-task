@@ -11,5 +11,6 @@ create table person
     password varchar not null,
     email    varchar not null,
     image_id int     not null references image (id) on delete set null,
-    status   int     not null
+    status   int     not null,
+    updated_at timestamp
 )

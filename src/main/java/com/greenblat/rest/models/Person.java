@@ -3,6 +3,7 @@ package com.greenblat.rest.models;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "person")
@@ -25,6 +26,10 @@ public class Person {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status")
     private Status status;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "image_id", referencedColumnName = "id")
@@ -86,5 +91,13 @@ public class Person {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

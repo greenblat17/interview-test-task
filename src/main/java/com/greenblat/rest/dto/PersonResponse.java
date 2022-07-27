@@ -2,22 +2,19 @@ package com.greenblat.rest.dto;
 
 import com.greenblat.rest.models.Status;
 
-public class PersonDTO {
-
+public class PersonResponse {
     private String username;
-    private String password;
     private String email;
     private Status status;
     private String imageUri;
 
-    public PersonDTO(String username, String password, String email, Status status ) {
+    public PersonResponse(String username, String password, String email, Status status ) {
         this.username = username;
-        this.password = password;
         this.email = email;
         this.status = status;
     }
 
-    public PersonDTO() {
+    public PersonResponse() {
     }
 
     public String getUsername() {
@@ -26,14 +23,6 @@ public class PersonDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {

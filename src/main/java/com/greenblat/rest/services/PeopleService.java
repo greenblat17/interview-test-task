@@ -1,5 +1,6 @@
 package com.greenblat.rest.services;
 
+import com.greenblat.rest.dao.PeopleDAO;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Image;
 import com.greenblat.rest.models.Person;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,24 +21,27 @@ public class PeopleService {
 
     private final PeopleRepository peopleRepository;
     private final ImagesRepository imagesRepository;
+    private final PeopleDAO peopleDAO;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, ImagesRepository imagesRepository) {
+    public PeopleService(PeopleRepository peopleRepository, ImagesRepository imagesRepository, PeopleDAO peopleDAO) {
         this.peopleRepository = peopleRepository;
         this.imagesRepository = imagesRepository;
+        this.peopleDAO = peopleDAO;
     }
 
     public Person findOne(long id) {
         return peopleRepository.findById(id).orElse(null);
     }
 
-    public List<Person> findAll(String status) {
+    public List<Person> findAll(String status, Long timestamp) {
         if (status == null)
             return peopleRepository.findAll();
-        else {
-            System.out.println(5);
+        else if (timestamp == null)
             return peopleRepository.findByStatus(status.equals("Online") ? Status.ONLINE : Status.OFFLINE);
-        }
+        else
+            return peopleDAO.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
+
 
     }
 
@@ -46,6 +51,7 @@ public class PeopleService {
         image.ifPresent(person::setImage);
 
         person.setStatus(Status.OFFLINE);
+        person.setUpdatedAt(new Date());
         peopleRepository.save(person);
         return person.getId();
     }
