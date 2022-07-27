@@ -40,8 +40,8 @@ public class PeopleService {
         else if (timestamp == null)
             return peopleRepository.findByStatus(status.equals("Online") ? Status.ONLINE : Status.OFFLINE);
         else
-            return peopleDAO.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
-
+            //return peopleDAO.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
+            return peopleRepository.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
 
     }
 
