@@ -1,6 +1,7 @@
 package com.greenblat.rest.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "image")
@@ -14,9 +15,8 @@ public class Image {
     @Column(name = "uri")
     private String uri;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Person user;
+    @OneToMany(mappedBy = "image")
+    private List<Person> people;
 
     public Image(String filename) {
         this.uri = filename;
@@ -41,11 +41,11 @@ public class Image {
         this.uri = filename;
     }
 
-    public Person getUser() {
-        return user;
+    public List<Person> getPeople() {
+        return people;
     }
 
-    public void setUser(Person user) {
-        this.user = user;
+    public void setPeople(List<Person> people) {
+        this.people = people;
     }
 }

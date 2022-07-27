@@ -22,8 +22,13 @@ public class Person {
     @Column(name = "email")
     private String email;
 
-    @OneToOne(mappedBy = "user")
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "status")
+    private Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private Image image;
 
     public Person() {
@@ -73,5 +78,13 @@ public class Person {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

@@ -1,11 +1,17 @@
 package com.greenblat.rest.controllers;
 
 import com.greenblat.rest.dto.PersonDTO;
+import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Person;
+import com.greenblat.rest.models.Status;
 import com.greenblat.rest.services.PeopleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users/")
@@ -21,8 +27,9 @@ public class PeopleController {
     }
 
     @PostMapping("/add")
-    public Long addUser(@RequestBody PersonDTO personDTO) {
-        return peopleService.save(modelMapper.map(personDTO, Person.class), personDTO.getImageUri());
+    public ResponseEntity<String> addUser(@RequestBody PersonDTO personDTO) {
+        Long id = peopleService.save(modelMapper.map(personDTO, Person.class), personDTO.getImageUri());
+        return ResponseEntity.ok("Id: " + id);
     }
 
     @GetMapping("/{id}")
@@ -31,6 +38,11 @@ public class PeopleController {
         PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
         personDTO.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
         return personDTO;
+    }
+
+    @GetMapping("/{id}/status")
+    public StatusResponse changeStatus(@PathVariable("id") int id) {
+        return peopleService.updateStatus(id);
     }
 }
 
