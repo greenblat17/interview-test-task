@@ -6,12 +6,11 @@ import com.greenblat.rest.models.Person;
 import com.greenblat.rest.models.Status;
 import com.greenblat.rest.repositories.ImagesRepository;
 import com.greenblat.rest.repositories.PeopleRepository;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,8 +26,18 @@ public class PeopleService {
         this.imagesRepository = imagesRepository;
     }
 
-    public Person getUserById(long id) {
+    public Person findOne(long id) {
         return peopleRepository.findById(id).orElse(null);
+    }
+
+    public List<Person> findAll(String status) {
+        if (status == null)
+            return peopleRepository.findAll();
+        else {
+            System.out.println(5);
+            return peopleRepository.findByStatus(status.equals("Online") ? Status.ONLINE : Status.OFFLINE);
+        }
+
     }
 
     @Transactional

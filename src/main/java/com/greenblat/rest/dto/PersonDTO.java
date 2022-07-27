@@ -1,16 +1,21 @@
 package com.greenblat.rest.dto;
 
+import com.greenblat.rest.models.Status;
+
 public class PersonDTO {
 
     private String username;
     private String password;
     private String email;
+    private Status status;
+
     private String imageUri;
 
-    public PersonDTO(String username, String password, String email) {
+    public PersonDTO(String username, String password, String email, Status status ) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.status = status;
     }
 
     public PersonDTO() {
@@ -46,5 +51,13 @@ public class PersonDTO {
 
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

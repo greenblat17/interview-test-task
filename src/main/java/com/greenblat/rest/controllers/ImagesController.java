@@ -18,7 +18,7 @@ public class ImagesController {
         this.imagesService = imagesService;
     }
 
-    @PostMapping("/uploads")
+    @PostMapping()
     public String uploadImages(@RequestParam("file") MultipartFile file) throws IOException {
         return imagesService.upload(file);
     }
