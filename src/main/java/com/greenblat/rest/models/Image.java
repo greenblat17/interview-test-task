@@ -16,7 +16,7 @@ public class Image {
     @Column(name = "uri")
     private String uri;
 
-    @OneToMany(mappedBy = "image")
+    @OneToMany(mappedBy = "image", fetch = FetchType.EAGER)
     private List<Person> people;
 
     public Image(String filename) {

@@ -1,6 +1,7 @@
 package com.greenblat.rest.security;
 
 import com.greenblat.rest.models.Person;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,7 @@ public class PersonDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return person.getUsername();
+        return person.getEmail();
     }
 
     @Override
@@ -49,5 +50,10 @@ public class PersonDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true; // аккаунт работает
+    }
+
+    // Нужно, чтобы получать данные аутентифицированного пользователя
+    public Person getPerson() {
+        return person;
     }
 }

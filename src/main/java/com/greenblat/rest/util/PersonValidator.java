@@ -35,8 +35,8 @@ public class PersonValidator implements Validator {
 
         //Error 1
         if (person.getId() == null || !Objects.equals(peopleService.findOne(person.getId()).getEmail(), person.getEmail())) {
-            List<Person> peopleByEmail = peopleService.findUserByEmail(person.getEmail());
-            if (!peopleByEmail.isEmpty())
+            Person personByEmail = peopleService.findUserByEmail(person.getEmail());
+            if (personByEmail != null)
                 errors.rejectValue("email", "", "Email should be unique");
         }
 

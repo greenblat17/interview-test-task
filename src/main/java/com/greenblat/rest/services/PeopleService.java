@@ -95,8 +95,8 @@ public class PeopleService {
 
     }
 
-    public List<Person> findUserByEmail(String email) {
-        return peopleRepository.findByEmail(email);
+    public Person findUserByEmail(String email) {
+        return peopleRepository.findByEmail(email).orElse(null);
     }
 
 }
