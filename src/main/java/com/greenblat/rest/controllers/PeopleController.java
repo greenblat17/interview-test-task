@@ -6,22 +6,18 @@ import com.greenblat.rest.dto.PersonResponse;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Person;
 import com.greenblat.rest.services.PeopleService;
-import com.greenblat.rest.util.PersonErrorResponse;
-import com.greenblat.rest.util.PersonNotCreatedException;
-import com.greenblat.rest.util.PersonNotFoundException;
-import com.greenblat.rest.util.PersonValidator;
+import com.greenblat.rest.util.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.greenblat.rest.util.PersonError.incorrectField;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -40,29 +36,29 @@ public class PeopleController {
 
     @PostMapping()
     public ResponseEntity<String> addUser(@RequestBody @Valid PersonRequest personDTO, BindingResult bindingResult) {
-        personValidator.validate(modelMapper.map(personDTO, Person.class), bindingResult);
-        if (bindingResult.hasErrors())
-            incorrectField(bindingResult);
+        Person person = convertToPerson(personDTO);
 
-        Long id = peopleService.save(modelMapper.map(personDTO, Person.class), personDTO.getImageUri());
+        validationPerson(person, bindingResult);
+        Long id = peopleService.save(person, personDTO.getImageUri());
         return ResponseEntity.ok("Id: " + id);
     }
 
     @PatchMapping("/{id}")
     public PersonResponse updateUser(@PathVariable long id, @RequestBody @Valid PersonRequest personDTO, BindingResult bindingResult) {
-        personValidator.validate(modelMapper.map(personDTO, Person.class), bindingResult);
-        if (bindingResult.hasErrors())
-            incorrectField(bindingResult);
+        Person person = convertToPerson(personDTO);
+        person.setId(id);
 
-        Person person = peopleService.update(id, modelMapper.map(personDTO, Person.class));
-        return modelMapper.map(person, PersonResponse.class);
+        validationPerson(person, bindingResult);
+
+        Person updatePerson = peopleService.update(person, personDTO.getImageUri());
+        return convertToPersonResponse(updatePerson);
     }
 
     @GetMapping("/{id}")
     public PersonResponse getUser(@PathVariable int id) {
         Person person = peopleService.findOne(id);
 
-        PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
+        PersonResponse personResponse = convertToPersonResponse(person);
         personResponse.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
 
         return personResponse;
@@ -74,7 +70,7 @@ public class PeopleController {
         List<Person> people = peopleService.findAll(status, timestamp);
         List<PersonResponse> peopleResponse = new ArrayList<>();
         for (Person person: people) {
-            PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
+            PersonResponse personResponse = convertToPersonResponse(person);
             personResponse.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
             peopleResponse.add(personResponse);
         }
@@ -86,6 +82,34 @@ public class PeopleController {
         return peopleService.updateStatus(id);
     }
 
+
+    // convert
+    public Person convertToPerson(PersonRequest personRequest) {
+        return modelMapper.map(personRequest, Person.class);
+    }
+
+    public PersonResponse convertToPersonResponse(Person person) {
+        return modelMapper.map(person, PersonResponse.class);
+    }
+
+    // validation
+    public void validationPerson(Person person, BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
+
+        if (bindingResult.hasFieldErrors()) {
+            StringBuilder error = new StringBuilder();
+
+            for (FieldError field : bindingResult.getFieldErrors()) {
+                error
+                        .append(field.getField())
+                        .append(" - ")
+                        .append(field.getDefaultMessage())
+                        .append("; ");
+            }
+
+            throw new PersonNotCreatedException(error.toString());
+        }
+    }
 
     // Exception Handler
     @ExceptionHandler
@@ -102,6 +126,16 @@ public class PeopleController {
     public ResponseEntity<PersonErrorResponse> handleException(PersonNotFoundException e) {
         PersonErrorResponse response = new PersonErrorResponse(
                 "User with this ID wasn't found",
+                System.currentTimeMillis()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ImageErrorResponse> handleException(ImageNotFoundException e) {
+        ImageErrorResponse response = new ImageErrorResponse(
+                "Image with this URI wasn't found",
                 System.currentTimeMillis()
         );
 

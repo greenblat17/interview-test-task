@@ -22,7 +22,7 @@ public class Person {
     private String username;
 
     @NotEmpty(message = "Password should not be empty")
-    @Size(min = 8, message = "Password's length should be greater than 8")
+    @Size(min = 8, max = 30, message = "Password's length should be greater than 8")
     @Column(name = "password")
     private String password;
 

@@ -8,14 +8,13 @@ public class PersonRequest {
     private String username;
     private String password;
     private String email;
-    private Status status;
     private String imageUri;
 
-    public PersonRequest(String username, String password, String email, Status status ) {
+    public PersonRequest(String username, String password, String email, String imageUri) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.status = status;
+        this.imageUri = imageUri;
     }
 
     public PersonRequest() {
@@ -51,13 +50,5 @@ public class PersonRequest {
 
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 }

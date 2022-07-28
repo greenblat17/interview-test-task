@@ -1,2 +1,4 @@
-package com.greenblat.rest.util;public class ImageNotFoundException {
+package com.greenblat.rest.util;
+
+public class ImageNotFoundException extends RuntimeException {
 }

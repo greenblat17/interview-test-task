@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class PersonValidator implements Validator {
@@ -29,9 +30,12 @@ public class PersonValidator implements Validator {
         Person person = (Person) target;
 
         //Error 1
-        List<Person> peopleByEmail = peopleService.findByEmail(person.getEmail());
-        if (!peopleByEmail.isEmpty())
-            errors.rejectValue("email", "", "Email should be unique");
+        Person personById = peopleService.findOne(person.getId());
+        if (personById == null || !Objects.equals(personById.getEmail(), person.getEmail())) {
+            List<Person> peopleByEmail = peopleService.findUserByEmail(person.getEmail());
+            if (!peopleByEmail.isEmpty())
+                errors.rejectValue("email", "", "Email should be unique");
+        }
 
 
         // Error 2

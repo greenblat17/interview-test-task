@@ -7,6 +7,7 @@ import com.greenblat.rest.models.Person;
 import com.greenblat.rest.models.Status;
 import com.greenblat.rest.repositories.ImagesRepository;
 import com.greenblat.rest.repositories.PeopleRepository;
+import com.greenblat.rest.util.ImageNotFoundException;
 import com.greenblat.rest.util.PersonNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,18 +40,17 @@ public class PeopleService {
         else if (timestamp == null)
             return peopleRepository.findByStatus(status.equals("Online") ? Status.ONLINE : Status.OFFLINE);
         else
-            //return peopleDAO.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
             return peopleRepository.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
 
     }
 
     @Transactional
     public Long save(Person person, String imageUri) {
-        Optional<Image> image = imagesRepository.findByUri(imageUri);
-        image.ifPresent(person::setImage);
+        Image image = imagesRepository.findByUri(imageUri).orElseThrow(ImageNotFoundException::new);
 
         person.setStatus(Status.OFFLINE);
         person.setUpdatedAt(new Date());
+        person.setImage(image);
         peopleRepository.save(person);
         return person.getId();
     }
@@ -82,20 +82,22 @@ public class PeopleService {
     }
 
     @Transactional
-    public Person update(long id, Person updatedPerson) {
-        Optional<Person> person = peopleRepository.findById(id);
+    public Person update(Person updatedPerson, String imageUri) {
+        Optional<Person> person = peopleRepository.findById(updatedPerson.getId());
         if (person.isEmpty())
             throw new PersonNotFoundException();
 
-        updatedPerson.setId(id);
+        updatedPerson.setId(updatedPerson.getId());
+        updatedPerson.setUpdatedAt(person.get().getUpdatedAt());
         updatedPerson.setStatus(person.get().getStatus());
-        updatedPerson.setImage(person.get().getImage());
+        updatedPerson.setImage(imagesRepository.findByUri(imageUri).orElseThrow(ImageNotFoundException::new));
         peopleRepository.save(updatedPerson);
         return updatedPerson;
 
     }
 
-    public List<Person> findByEmail(String email) {
+    public List<Person> findUserByEmail(String email) {
         return peopleRepository.findByEmail(email);
     }
+
 }

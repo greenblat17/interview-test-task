@@ -8,7 +8,7 @@ public class PersonResponse {
     private Status status;
     private String imageUri;
 
-    public PersonResponse(String username, String password, String email, Status status ) {
+    public PersonResponse(String username, String email, Status status ) {
         this.username = username;
         this.email = email;
         this.status = status;
