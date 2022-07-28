@@ -37,7 +37,7 @@ public class PeopleController {
     @PostMapping()
     public ResponseEntity<String> addUser(@RequestBody @Valid PersonRequest personDTO, BindingResult bindingResult) {
         Person person = convertToPerson(personDTO);
-        
+
         validationPerson(person, bindingResult);
         Long id = peopleService.save(person, personDTO.getImageUri());
         return ResponseEntity.ok("Id: " + id);
