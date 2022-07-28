@@ -1,7 +1,7 @@
 package com.greenblat.rest.controllers;
 
 import com.greenblat.rest.dto.PeopleResponse;
-import com.greenblat.rest.dto.PersonDTO;
+import com.greenblat.rest.dto.PersonRequest;
 import com.greenblat.rest.dto.PersonResponse;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Person;
@@ -39,7 +39,7 @@ public class PeopleController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> addUser(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
+    public ResponseEntity<String> addUser(@RequestBody @Valid PersonRequest personDTO, BindingResult bindingResult) {
         personValidator.validate(modelMapper.map(personDTO, Person.class), bindingResult);
         if (bindingResult.hasErrors())
             incorrectField(bindingResult);
@@ -48,14 +48,23 @@ public class PeopleController {
         return ResponseEntity.ok("Id: " + id);
     }
 
+    @PatchMapping("/{id}")
+    public PersonResponse updateUser(@PathVariable long id, @RequestBody @Valid PersonRequest personDTO, BindingResult bindingResult) {
+        personValidator.validate(modelMapper.map(personDTO, Person.class), bindingResult);
+        if (bindingResult.hasErrors())
+            incorrectField(bindingResult);
+
+        Person person = peopleService.update(id, modelMapper.map(personDTO, Person.class));
+        return modelMapper.map(person, PersonResponse.class);
+    }
+
     @GetMapping("/{id}")
     public PersonResponse getUser(@PathVariable int id) {
         Person person = peopleService.findOne(id);
-        if (person == null)
-            throw new PersonNotFoundException();
 
         PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
         personResponse.setImageUri(person.getImage() != null ? person.getImage().getUri() : null);
+
         return personResponse;
     }
 

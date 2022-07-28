@@ -1,8 +1,9 @@
 package com.greenblat.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.greenblat.rest.models.Status;
 
-public class PersonDTO {
+public class PersonRequest {
 
     private String username;
     private String password;
@@ -10,14 +11,14 @@ public class PersonDTO {
     private Status status;
     private String imageUri;
 
-    public PersonDTO(String username, String password, String email, Status status ) {
+    public PersonRequest(String username, String password, String email, Status status ) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.status = status;
     }
 
-    public PersonDTO() {
+    public PersonRequest() {
     }
 
     public String getUsername() {

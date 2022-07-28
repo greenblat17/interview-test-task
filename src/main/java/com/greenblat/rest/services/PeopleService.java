@@ -1,11 +1,13 @@
 package com.greenblat.rest.services;
 
+import com.greenblat.rest.dto.PersonRequest;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Image;
 import com.greenblat.rest.models.Person;
 import com.greenblat.rest.models.Status;
 import com.greenblat.rest.repositories.ImagesRepository;
 import com.greenblat.rest.repositories.PeopleRepository;
+import com.greenblat.rest.util.PersonNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class PeopleService {
     }
 
     public Person findOne(long id) {
-        return peopleRepository.findById(id).orElse(null);
+        return peopleRepository.findById(id).orElseThrow(PersonNotFoundException::new);
     }
 
     public List<Person> findAll(String status, Long timestamp) {
@@ -40,10 +42,6 @@ public class PeopleService {
             //return peopleDAO.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
             return peopleRepository.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
 
-    }
-
-    public List<Person> findByUsername(String name) {
-        return peopleRepository.findByUsername(name);
     }
 
     @Transactional
@@ -74,10 +72,27 @@ public class PeopleService {
                 response.setNewStatus(Status.OFFLINE);
                 response.setOldStatus(Status.ONLINE);
             }
+            person.get().setUpdatedAt(new Date());
             peopleRepository.save(person.get());
+        } else {
+            throw new PersonNotFoundException();
         }
 
         return response;
+    }
+
+    @Transactional
+    public Person update(long id, Person updatedPerson) {
+        Optional<Person> person = peopleRepository.findById(id);
+        if (person.isEmpty())
+            throw new PersonNotFoundException();
+
+        updatedPerson.setId(id);
+        updatedPerson.setStatus(person.get().getStatus());
+        updatedPerson.setImage(person.get().getImage());
+        peopleRepository.save(updatedPerson);
+        return updatedPerson;
+
     }
 
     public List<Person> findByEmail(String email) {
