@@ -1,6 +1,5 @@
 package com.greenblat.rest.services;
 
-import com.greenblat.rest.dao.PeopleDAO;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Image;
 import com.greenblat.rest.models.Person;
@@ -21,13 +20,11 @@ public class PeopleService {
 
     private final PeopleRepository peopleRepository;
     private final ImagesRepository imagesRepository;
-    private final PeopleDAO peopleDAO;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, ImagesRepository imagesRepository, PeopleDAO peopleDAO) {
+    public PeopleService(PeopleRepository peopleRepository, ImagesRepository imagesRepository) {
         this.peopleRepository = peopleRepository;
         this.imagesRepository = imagesRepository;
-        this.peopleDAO = peopleDAO;
     }
 
     public Person findOne(long id) {
@@ -43,6 +40,10 @@ public class PeopleService {
             //return peopleDAO.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
             return peopleRepository.findByStatusAndTimestamp(status.equals("Online") ? Status.ONLINE : Status.OFFLINE, new Date(timestamp));
 
+    }
+
+    public List<Person> findByUsername(String name) {
+        return peopleRepository.findByUsername(name);
     }
 
     @Transactional
@@ -77,5 +78,9 @@ public class PeopleService {
         }
 
         return response;
+    }
+
+    public List<Person> findByEmail(String email) {
+        return peopleRepository.findByEmail(email);
     }
 }

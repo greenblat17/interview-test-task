@@ -18,6 +18,10 @@ public interface PeopleRepository extends JpaRepository<Person, Long> {
 
     List<Person> findByStatus(Status status);
 
+    List<Person> findByUsername(String username);
+
+    List<Person> findByEmail(String email);
+
     @Query("SELECT p FROM Person p WHERE p.status=?1 AND p.updatedAt>?2")
     List<Person> findByStatusAndTimestamp(Status status, Date date);
 }

@@ -3,6 +3,9 @@ package com.greenblat.rest.models;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -14,12 +17,17 @@ public class Person {
     @Column(name = "id")
     private Long id;
 
+    @NotEmpty(message = "Name should not be empty")
     @Column(name = "username")
     private String username;
 
+    @NotEmpty(message = "Password should not be empty")
+    @Size(min = 8, message = "Password's length should be greater than 8")
     @Column(name = "password")
     private String password;
 
+    @NotEmpty(message = "Message should not be empty")
+    @Email(message = "Email is wrong")
     @Column(name = "email")
     private String email;
 
