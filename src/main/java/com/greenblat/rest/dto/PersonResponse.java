@@ -1,6 +1,6 @@
 package com.greenblat.rest.dto;
 
-import com.greenblat.rest.models.Status;
+import com.greenblat.rest.models.enums.Status;
 
 public class PersonResponse {
     private String username;

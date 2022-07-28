@@ -1,4 +1,4 @@
-package com.greenblat.rest.models;
+package com.greenblat.rest.models.enums;
 
 public enum Status {
     ONLINE ("Online"),

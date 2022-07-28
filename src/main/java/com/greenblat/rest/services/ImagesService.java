@@ -2,6 +2,7 @@ package com.greenblat.rest.services;
 
 import com.greenblat.rest.models.Image;
 import com.greenblat.rest.repositories.ImagesRepository;
+import com.greenblat.rest.util.ImageNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,9 @@ public class ImagesService {
         imagesRepository.save(image);
 
         return image.getUri();
+    }
+
+    public Image getImage(String uri) {
+        return imagesRepository.findByUri(uri).orElseThrow(ImageNotFoundException::new);
     }
 }

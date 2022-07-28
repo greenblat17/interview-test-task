@@ -1,5 +1,6 @@
 package com.greenblat.rest.models;
 
+import com.greenblat.rest.models.enums.Status;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;

@@ -1,13 +1,23 @@
 package com.greenblat.rest.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.greenblat.rest.models.Status;
+import javax.persistence.Column;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 public class PersonRequest {
 
+    @NotEmpty(message = "Name should not be empty")
     private String username;
+
+    @NotEmpty(message = "Password should not be empty")
+    @Size(min = 8, max = 30, message = "Password's length should be greater than 8")
     private String password;
+
+    @NotEmpty(message = "Message should not be empty")
+    @Email(message = "Email is wrong")
     private String email;
+
     private String imageUri;
 
     public PersonRequest(String username, String password, String email, String imageUri) {

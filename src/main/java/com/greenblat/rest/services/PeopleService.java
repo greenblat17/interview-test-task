@@ -1,10 +1,9 @@
 package com.greenblat.rest.services;
 
-import com.greenblat.rest.dto.PersonRequest;
 import com.greenblat.rest.dto.StatusResponse;
 import com.greenblat.rest.models.Image;
 import com.greenblat.rest.models.Person;
-import com.greenblat.rest.models.Status;
+import com.greenblat.rest.models.enums.Status;
 import com.greenblat.rest.repositories.ImagesRepository;
 import com.greenblat.rest.repositories.PeopleRepository;
 import com.greenblat.rest.util.ImageNotFoundException;
@@ -82,12 +81,12 @@ public class PeopleService {
     }
 
     @Transactional
-    public Person update(Person updatedPerson, String imageUri) {
-        Optional<Person> person = peopleRepository.findById(updatedPerson.getId());
+    public Person update(long id, Person updatedPerson, String imageUri) {
+        Optional<Person> person = peopleRepository.findById(id);
         if (person.isEmpty())
             throw new PersonNotFoundException();
 
-        updatedPerson.setId(updatedPerson.getId());
+        updatedPerson.setId(id);
         updatedPerson.setUpdatedAt(person.get().getUpdatedAt());
         updatedPerson.setStatus(person.get().getStatus());
         updatedPerson.setImage(imagesRepository.findByUri(imageUri).orElseThrow(ImageNotFoundException::new));

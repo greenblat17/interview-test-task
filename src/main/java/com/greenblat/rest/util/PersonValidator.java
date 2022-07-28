@@ -1,6 +1,8 @@
 package com.greenblat.rest.util;
 
+import com.greenblat.rest.models.Image;
 import com.greenblat.rest.models.Person;
+import com.greenblat.rest.services.ImagesService;
 import com.greenblat.rest.services.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,10 +16,12 @@ import java.util.Objects;
 public class PersonValidator implements Validator {
 
     private final PeopleService peopleService;
+    private final ImagesService imagesService;
 
     @Autowired
-    public PersonValidator(PeopleService peopleService) {
+    public PersonValidator(PeopleService peopleService, ImagesService imagesService) {
         this.peopleService = peopleService;
+        this.imagesService = imagesService;
     }
 
     @Override
@@ -30,8 +34,7 @@ public class PersonValidator implements Validator {
         Person person = (Person) target;
 
         //Error 1
-        Person personById = peopleService.findOne(person.getId());
-        if (personById == null || !Objects.equals(personById.getEmail(), person.getEmail())) {
+        if (person.getId() == null || !Objects.equals(peopleService.findOne(person.getId()).getEmail(), person.getEmail())) {
             List<Person> peopleByEmail = peopleService.findUserByEmail(person.getEmail());
             if (!peopleByEmail.isEmpty())
                 errors.rejectValue("email", "", "Email should be unique");
@@ -42,5 +45,6 @@ public class PersonValidator implements Validator {
         char firstLetter = person.getUsername().charAt(0);
         if (!Character.isUpperCase(firstLetter))
             errors.rejectValue("username", "", "Username should be start with a capital letter");
+
     }
 }

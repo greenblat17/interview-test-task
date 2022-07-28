@@ -1,12 +1,11 @@
 package com.greenblat.rest.repositories;
 
 import com.greenblat.rest.models.Person;
-import com.greenblat.rest.models.Status;
+import com.greenblat.rest.models.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
